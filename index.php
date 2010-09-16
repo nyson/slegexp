@@ -7,8 +7,8 @@
 </head>
 <body>
 
-global 
-<input type="checkbox" checked="checked" id="regG" onchange="void(0);" />
+global:
+<input type="checkbox" checked="checked" disabled="disabled" id="regG" onchange="void(0);" /> <i>(matching loops forever if this is unchecked, will work for a workaround)</i>
 <br />case-insensitive 
 <input type="checkbox" checked="checked" id="regI" onchange="void(0);" />
 <br />multiline 
@@ -25,7 +25,7 @@ global
 <br /><textarea id="regText" onkeyup="void(0);"></textarea>
 <input type="button" onclick="regUpdate();" /> 
 <div id="regOutput"></div>
-<div id="diag"></div>
+<pre id="diag"></pre>
 
 </body>
 </html>

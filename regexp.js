@@ -1,7 +1,15 @@
-function regUpdate() {
 
+/**
+ * Updates our regular expression
+ */
+function regUpdate() {
+	var mods = new Array();
+	mods['g'] = document.getElementById("regG").checked;
+	mods['i'] = document.getElementById("regG").checked;
+	mods['m'] = document.getElementById("regG").checked;
+	
 	// get modifiers from our checkboxes
-	var mods = (document.getElementById("regG").checked ? "g" : "")
+	var mod = (true ? "g" : "")
 		+ (document.getElementById("regI").checked ? "i" : "")
 		+ (document.getElementById("regM").checked ? "m" : "");
 
@@ -12,24 +20,10 @@ function regUpdate() {
 	// our expression
 	var expr = new RegExp(
 		document.getElementById("expression").value.replace(/^\s*|\s*$/g, '')
-		, mods);
+		, mod);
 
 	// our matches, higlighted
-	var results = new Array();
-	var r;
-	var matchedText = inp;
-	
-	// populate the match array
-	while((r = expr.exec(inp)) != null) {
-		results.push(new reMatch((expr.lastIndex-r.toString().length), r));
-	}
-	
-	// create a string from the match array
-	while(r = results.pop()) {
-		matchedText = matchedText.substr(0, parseInt(r.pos))
-			 +"<span class='mark'>"+r.result+"</span>"
-			 +matchedText.substr(parseInt(r.pos) + r.result.length);
-	}
+	var matchedText = markMatchedText(inp, expr, "mark");
 	
 	// replace matches
 	var rep = document.getElementById("matchReplace").value;
@@ -47,7 +41,35 @@ function regUpdate() {
 function reMatch(pos, res) {
 	this.result = new String(res);
 	this.pos = pos;
-	this.p = function() {
-		return "p: " + this.pos +", r: " + this.result;
-	}
+	return this;
 }
+
+function markMatchedText(text, expression, className) {
+	if(className == null)
+		className = "mark";
+	// temporary result storage
+	var r; 	
+	// array containing the positions where we have matches
+	var results = new Array(); 
+
+	// populate the match array
+	while(validExpressionExec(r = expression.exec(text))) {
+		results.push(new reMatch(
+			(expression.lastIndex-r.toString().length)
+			, r));
+	}
+	
+	// create a string from the match array
+	while(r = results.pop()) {
+		text = text.substr(0, parseInt(r.pos))
+			 +"<span class='"+className+"'>"+r.result+"</span>"
+			 +text.substr(parseInt(r.pos) + r.result.length);
+	}
+	
+	return text;
+}
+
+function validExpressionExec(exResp) {
+	return exResp != null && exResp != "";
+}
+
